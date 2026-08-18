@@ -18,7 +18,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/traefik/traefik/v3/pkg/config/dynamic"
 	"github.com/traefik/traefik/v3/pkg/job"
-  "github.com/traefik/traefik/v3/pkg/observability/logs"
+	"github.com/traefik/traefik/v3/pkg/observability/logs"
 	"github.com/traefik/traefik/v3/pkg/provider"
 	"github.com/traefik/traefik/v3/pkg/safe"
 
@@ -88,7 +88,7 @@ func (p *Provider) Provide(configurationChan chan<- dynamic.Message, pool *safe.
 		}
 		p.Endpoint = protocol
 
-		p.logger.Info().Msgf("Connect Mesos Provider to: ", p.Endpoint)
+		p.logger.Info().Msgf("Connect Mesos Provider to: %s", p.Endpoint)
 
 		operation := func() error {
 			ctx, cancel := context.WithCancel(ctxLog)
@@ -133,7 +133,7 @@ func (p *Provider) loadConfiguration(ctx context.Context, configurationChan chan
 	_, err := fnvHasher.Write(tasksString)
 
 	if err != nil {
-		p.logger.Error().Msgf("cannot hash mesos tasks data: ", err.Error())
+		p.logger.Error().Msgf("cannot hash mesos tasks data: %s", err.Error())
 		return err
 	}
 
@@ -143,7 +143,7 @@ func (p *Provider) loadConfiguration(ctx context.Context, configurationChan chan
 	hash := fnvHasher.Sum64()
 
 	if timeDiff >= p.ForceUpdateInterval.Minutes() {
-		p.logger.Info().Msgf("Force Update Traefik Config", timeDiff)
+		p.logger.Info().Msgf("Force Update Traefik Config after %.1f minutes", timeDiff)
 	} else {
 		if hash == p.lastConfigurationHash {
 			p.logger.Debug().Msg("nothing to update.")
@@ -213,7 +213,7 @@ func (p *Provider) getTasks() MesosTasks {
 	res, err := client.Do(req)
 
 	if err != nil {
-		p.logger.Error().Msgf("Error during get tasks: ", err.Error())
+		p.logger.Error().Msgf("Error during get tasks: %s", err.Error())
 		return MesosTasks{}
 	}
 	defer res.Body.Close()
@@ -270,7 +270,7 @@ func (p *Provider) getAgent(slaveID string) (string, int, error) {
 	res, err := client.Do(req)
 
 	if err != nil {
-		p.logger.Error().Msgf("Error during get agent: ", err.Error())
+		p.logger.Error().Msgf("Error during get agent: %s", err.Error())
 		return "", 0, err
 	}
 	defer res.Body.Close()
@@ -313,7 +313,7 @@ func (p *Provider) getContainersOfAgent(agentHostname string, agentPort int) (Me
 	res, err := client.Do(req)
 
 	if err != nil {
-		p.logger.Error().Msgf("Error during get container: ", err.Error())
+		p.logger.Error().Msgf("Error during get container: %s", err.Error())
 		return MesosAgentContainers{}, err
 	}
 	defer res.Body.Close()

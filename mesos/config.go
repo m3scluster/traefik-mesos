@@ -64,7 +64,7 @@ func (p *Provider) buildConfiguration(ctx context.Context) *dynamic.Configuratio
 		}
 	}
 
-	return provider.Merge(ctx, configurations)
+	return provider.Merge(ctx, provider.NameSortedConfigurations(configurations), provider.ResourceStrategyMerge)
 }
 
 // getPortname get the discovery portname
